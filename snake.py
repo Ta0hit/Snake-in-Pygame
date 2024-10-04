@@ -1,5 +1,6 @@
 import pygame, sys, random
 from pygame.math import Vector2
+from button import Button
 
 class SNAKE:
     # Initialize the snake
@@ -226,6 +227,8 @@ screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_si
 clock = pygame.time.Clock()
 # Import apple image
 apple = pygame.image.load('Images/apple.png').convert_alpha()
+# Import background image
+background = pygame.image.load('Images/snake_bg.png').convert_alpha()
 # Import font
 game_font = pygame.font.Font('Font/PoetsenOne-regular.ttf', 25) # (font, font size)
 
@@ -242,39 +245,98 @@ pygame.time.set_timer(SCREEN_UPDATE, 150)
 main_game = MAIN()
 
 # Main game loop
-while True:
-    # Check for events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            # Stops Pygame
-            pygame.quit()
-            # Stops all code
-            sys.exit()
+def play():
+    while True:
+        # Check for events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                # Stops Pygame
+                pygame.quit()
+                # Stops all code
+                sys.exit()
 
-        if event.type == SCREEN_UPDATE:
-            main_game.update()
+            if event.type == SCREEN_UPDATE:
+                main_game.update()
 
-        # Keyboard inputs
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
-                if main_game.snake.direction.y != 1: # Prevents the snake from moving into itself
-                    main_game.snake.direction = Vector2(0, -1)
-            if event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                if main_game.snake.direction.y != -1:
-                    main_game.snake.direction = Vector2(0, 1)
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                if main_game.snake.direction.x != -1:    
-                    main_game.snake.direction = Vector2(1, 0)
-            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                if main_game.snake.direction.x != 1:
-                    main_game.snake.direction = Vector2(-1, 0)
+            # Keyboard inputs
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    if main_game.snake.direction.y != 1: # Prevents the snake from moving into itself
+                        main_game.snake.direction = Vector2(0, -1)
+                if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    if main_game.snake.direction.y != -1:
+                        main_game.snake.direction = Vector2(0, 1)
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    if main_game.snake.direction.x != -1:    
+                        main_game.snake.direction = Vector2(1, 0)
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    if main_game.snake.direction.x != 1:
+                        main_game.snake.direction = Vector2(-1, 0)
 
-    # Fill the screen with a color
-    screen.fill((175, 215, 70))
-    # Draw the elements
-    main_game.draw_elements()
-    # Update the display
-    pygame.display.update()
-    # Limit the game to 60 fps
-    clock.tick(60) 
+        # Fill the screen with a color
+        screen.fill((175, 215, 70))
+        # Draw the elements
+        main_game.draw_elements()
+        # Update the display
+        pygame.display.update()
+        # Limit the game to 60 fps
+        clock.tick(60) 
 
+def options():
+    pass
+
+def main_menu():
+    pygame.display.set_caption('Menu')
+
+    while True:
+        # Draw the background
+        screen.blit(background, (0, 0))
+
+        # Check mouse position
+        menu_mouse_pos = pygame.mouse.get_pos()
+
+        # Create text
+        menu_text = game_font.render('MAIN MENU', True, (56, 74, 12))
+        menu_rect = menu_text.get_rect(center = (cell_number * cell_size // 2, cell_number * cell_size // 2 - 100))
+
+        # Create buttons
+        play_button = Button(image = pygame.image.load("images/play_rect.png"), \
+                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2), \
+                                text_input = "PLAY", font = game_font, base_colour = (56, 74, 12), \
+                                    hover_colour = (167, 209, 61))
+
+        options_button = Button(image = pygame.image.load("images/options_rect.png"), \
+                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2 + 100), \
+                                text_input = "OPTIONS", font = game_font, base_colour = (56, 74, 12), \
+                                    hover_colour = (167, 209, 61))
+        quit_button = Button(image = pygame.image.load("images/quit_rect.png"), \
+                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2 + 200), \
+                                text_input = "QUIT", font = game_font, base_colour = (56, 74, 12), \
+                                    hover_colour = (167, 209, 61))
+
+        # Put text on the screen
+        screen.blit(menu_text, menu_rect)
+
+        # 
+        for button in [play_button, options_button, quit_button]:
+            button.change_colour(menu_mouse_pos)
+            button.update(screen)
+
+        # Check for events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play_button.check_for_click(menu_mouse_pos):
+                    play()
+                if options_button.check_for_click(menu_mouse_pos):
+                    options()
+                if quit_button.check_for_click(menu_mouse_pos):
+                    pygame.quit()
+                    sys.exit()
+        
+        pygame.display.update()
+
+main_menu() 
