@@ -283,7 +283,39 @@ def play():
         clock.tick(60) 
 
 def options():
-    pass
+    pygame.display.set_caption('Options')
+
+    while True:
+        option_mouse_pos = pygame.mouse.get_pos()
+
+        # Draw the background
+        screen.blit(background, (0, 0))
+
+        # Create text
+        option_text = game_font.render('OPTIONS', True, (56, 74, 12))
+        option_rect = option_text.get_rect(center = (cell_number * cell_size // 2, cell_number * cell_size // 2 - 100))
+        screen.blit(option_text, option_rect)
+
+        # Create back button
+        back_button = Button(image = None, pos = (cell_number * cell_size // 2, cell_number * cell_size // 2), \
+                                text_input = "BACK", font = game_font, base_colour = (56, 74, 12), \
+                                    hover_colour = (167, 209, 61))
+        
+        # Update back button
+        back_button.change_colour(option_mouse_pos)
+        back_button.update(screen)
+
+        # Check for events in the options menu
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if back_button.check_for_click(option_mouse_pos):
+                    main_menu()
+
+        pygame.display.update()
 
 def main_menu():
     pygame.display.set_caption('Menu')
@@ -317,12 +349,12 @@ def main_menu():
         # Put text on the screen
         screen.blit(menu_text, menu_rect)
 
-        # 
+        # Update buttons
         for button in [play_button, options_button, quit_button]:
             button.change_colour(menu_mouse_pos)
             button.update(screen)
 
-        # Check for events
+        # Check for events in the menu
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
