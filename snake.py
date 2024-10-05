@@ -1,6 +1,7 @@
 import pygame, sys, random
 from pygame.math import Vector2
-from button import Button
+from button import BUTTON
+from pygame import mixer
 
 class SNAKE:
     # Initialize the snake
@@ -105,6 +106,7 @@ class SNAKE:
     def play_crunch_sound(self):
         self.crunch_sound.play()
 
+    # Reset the snake's length after game over
     def reset(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = Vector2(0, 0)
@@ -137,6 +139,12 @@ class MAIN:
         self.snake = SNAKE()
         self.fruit = FRUIT()
 
+    # Add background music in the main menu
+    def menu_music(self):
+        # By simmys_recycle_bin from freesound.org
+        mixer.music.load('Sound/menu_music.wav')
+        mixer.music.play(-1)
+   
     # Update the snake when it moves
     def update(self):
         self.snake.move_snake()
@@ -225,11 +233,9 @@ cell_number = 20
 screen = pygame.display.set_mode((cell_number * cell_size, cell_number * cell_size)) # Set the screen size (width, height)
 # Set fps (without it the game will run as fast as it can)
 clock = pygame.time.Clock()
-# Import apple image
+# Import assets
 apple = pygame.image.load('Images/apple.png').convert_alpha()
-# Import background image
 background = pygame.image.load('Images/snake_bg.png').convert_alpha()
-# Import font
 game_font = pygame.font.Font('Font/PoetsenOne-regular.ttf', 25) # (font, font size)
 
 '''
@@ -283,6 +289,7 @@ def play():
         clock.tick(60) 
 
 def options():
+    # Set the title of the window
     pygame.display.set_caption('Options')
 
     while True:
@@ -297,7 +304,7 @@ def options():
         screen.blit(option_text, option_rect)
 
         # Create back button
-        back_button = Button(image = None, pos = (cell_number * cell_size // 2, cell_number * cell_size // 2), \
+        back_button = BUTTON(image = None, pos = (cell_number * cell_size // 2, cell_number * cell_size // 2), \
                                 text_input = "BACK", font = game_font, base_colour = (56, 74, 12), \
                                     hover_colour = (167, 209, 61))
         
@@ -318,9 +325,14 @@ def options():
         pygame.display.update()
 
 def main_menu():
+    # Set the title of the window
     pygame.display.set_caption('Menu')
 
+    # Play background music
+    main_game.menu_music()
+
     while True:
+       
         # Draw the background
         screen.blit(background, (0, 0))
 
@@ -332,17 +344,17 @@ def main_menu():
         menu_rect = menu_text.get_rect(center = (cell_number * cell_size // 2, cell_number * cell_size // 2 - 100))
 
         # Create buttons
-        play_button = Button(image = pygame.image.load("images/play_rect.png"), \
+        play_button = BUTTON(image = pygame.image.load("images/play_rect.png"), \
                              pos = (cell_number * cell_size // 2, cell_number * cell_size // 2), \
                                 text_input = "PLAY", font = game_font, base_colour = (56, 74, 12), \
                                     hover_colour = (167, 209, 61))
 
-        options_button = Button(image = pygame.image.load("images/options_rect.png"), \
-                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2 + 100), \
+        options_button = BUTTON(image = pygame.image.load("images/options_rect.png"), \
+                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2 + 120), \
                                 text_input = "OPTIONS", font = game_font, base_colour = (56, 74, 12), \
                                     hover_colour = (167, 209, 61))
-        quit_button = Button(image = pygame.image.load("images/quit_rect.png"), \
-                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2 + 200), \
+        quit_button = BUTTON(image = pygame.image.load("images/quit_rect.png"), \
+                             pos = (cell_number * cell_size // 2, cell_number * cell_size // 2 + 240), \
                                 text_input = "QUIT", font = game_font, base_colour = (56, 74, 12), \
                                     hover_colour = (167, 209, 61))
 

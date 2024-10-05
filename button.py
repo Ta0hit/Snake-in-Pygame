@@ -1,4 +1,4 @@
-class Button():
+class BUTTON():
     # Initialise properties of the button
     def __init__(self, image, pos, text_input, font, base_colour, hover_colour):
         self.image = image
